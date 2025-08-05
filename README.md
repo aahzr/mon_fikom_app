@@ -1,61 +1,88 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# SiMonik - Sistem Informasi Monitoring Dosen
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistem Informasi Monitoring Kinerja (SiMonik) Dosen adalah sebuah aplikasi web yang dibangun menggunakan framework Laravel. Aplikasi ini bertujuan untuk membantu dosen dalam mengelola dan memonitor data-data penting terkait kinerja akademis, penelitian, pengabdian, hingga administrasi.
 
-## About Laravel
+## Tentang Proyek
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+SiMonik dirancang dengan antarmuka yang bersih dan minimalis, memungkinkan dosen untuk dengan mudah menginput dan memantau berbagai data, termasuk:
+-   **Profil Dosen:** Data pribadi, jabatan fungsional, kepangkatan, dan penempatan.
+-   **Aktivitas Penelitian & Pengabdian:** Mengelola proposal, laporan, dan luaran dari setiap kegiatan.
+-   **Manajemen Keuangan:** Memantau data-data keuangan yang relevan.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+Aplikasi ini menggunakan pendekatan Single Page Application (SPA) parsial dengan teknologi AJAX untuk memberikan pengalaman pengguna yang lebih cepat dan interaktif saat menavigasi menu profil.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Fitur Utama
 
-## Learning Laravel
+-   **Dashboard Beranda:** Ringkasan cepat mengenai status profil, jumlah proposal, laporan, dan data keuangan.
+-   **Manajemen Profil:** Memungkinkan dosen untuk memperbarui dan menyimpan data pribadi secara terperinci.
+-   **Pengelolaan Dokumen:** Unggah dan kelola dokumen penting seperti proposal, laporan, dan luaran.
+-   **Sinkronisasi Data:** Nama dan foto profil diperbarui secara otomatis di seluruh halaman setelah data disimpan.
+-   **Otentikasi Aman:** Sistem login yang terintegrasi dengan peran pengguna (Dosen).
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Teknologi yang Digunakan
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+-   **Backend:** Laravel Framework (PHP)
+-   **Database:** SQLite (atau database relasional lain)
+-   **Frontend:** Tailwind CSS (via CDN), jQuery, SweetAlert2
+-   **Environment:** PHP 8.x
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Instalasi
 
-## Laravel Sponsors
+Ikuti langkah-langkah berikut untuk menjalankan proyek ini di lingkungan lokal Anda:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+1.  Clone repositori ini:
+    ```bash
+    git clone [URL_REPOSITORI_ANDA]
+    ```
 
-### Premium Partners
+2.  Masuk ke direktori proyek:
+    ```bash
+    cd nama-proyek-anda
+    ```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+3.  Instal dependensi Composer:
+    ```bash
+    composer install
+    ```
 
-## Contributing
+4.  Salin file `.env.example` dan buat file `.env`:
+    ```bash
+    cp .env.example .env
+    ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+5.  Buat *application key*:
+    ```bash
+    php artisan key:generate
+    ```
 
-## Code of Conduct
+6.  Jalankan migrasi database dan seed data (jika ada):
+    ```bash
+    php artisan migrate --seed
+    ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+7.  Buat symbolic link untuk penyimpanan publik (jika belum ada):
+    ```bash
+    php artisan storage:link
+    ```
 
-## Security Vulnerabilities
+8.  Jalankan server pengembangan Laravel:
+    ```bash
+    php artisan serve
+    ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Aplikasi sekarang dapat diakses di `http://127.0.0.1:8000`.
 
-## License
+## Penggunaan
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+-   Masuk (login) menggunakan akun yang sudah terdaftar.
+-   Halaman **Beranda** akan menampilkan ringkasan aktivitas.
+-   Gunakan menu **Profil** di sidebar untuk memperbarui data pribadi dan informasi lainnya.
+-   Tampilan header dan sidebar akan otomatis diperbarui setelah Anda menyimpan perubahan profil.
+
+## Kontribusi
+
+Kami menyambut baik kontribusi dari siapa saja. Jika Anda menemukan bug, memiliki ide fitur baru, atau ingin membantu memperbaiki kode, silakan ajukan *pull request* atau buka *issue* di repositori ini.
+
+## Lisensi
+
+Proyek ini dilisensikan di bawah [MIT License](https://opensource.org/licenses/MIT).
