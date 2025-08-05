@@ -6,13 +6,14 @@ use App\Http\Controllers\ProfileController;
 
 Route::get('/', function () {
     if (Auth::check()) {
-        return redirect()->route('dashboard');
+        return redirect()->route('beranda');
     }
     return view('auth.login');
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    // Mengubah nama route 'dashboard' menjadi 'beranda'
+    Route::get('/beranda', [DashboardController::class, 'index'])->name('beranda');
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
     Route::get('/profile/{section}', [ProfileController::class, 'showSection'])->name('profile.section');
     Route::post('/profile/data-pribadi', [ProfileController::class, 'updateDataPribadi'])->name('profile.data-pribadi.update');

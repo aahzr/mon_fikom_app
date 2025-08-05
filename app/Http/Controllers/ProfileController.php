@@ -44,24 +44,36 @@ class ProfileController extends Controller
             'agama' => 'required|string|max:50',
             'nomor_telepon' => 'required|string|max:15',
             'alamat_domisili' => 'required|string|max:500',
-            'email_pribadi' => 'required|email|unique:dosen_profiles,email_pribadi,' . Auth::id(),
+            // 'email_pribadi' => 'required|email|unique:dosen_profiles,email_pribadi,' . Auth::id(), // Dihapus karena user_id tidak sama dengan id dosen_profile
+            'email_pribadi' => 'required|email|unique:dosen_profiles,email_pribadi,' . (Auth::user()->dosenProfile->id ?? null),
             'foto_profil' => 'nullable|image|max:2048',
         ]);
 
-        $profile = Auth::user()->dosenProfile ?? new DosenProfile(['user_id' => Auth::id()]);
-        $data = $request->all();
+        $user = Auth::user();
+        $profile = $user->dosenProfile ?? new DosenProfile(['user_id' => $user->id]);
+        
+        $data = $request->except(['_token']);
 
         if ($request->hasFile('foto_profil')) {
             if ($profile->foto_profil) {
-                Storage::delete($profile->foto_profil);
+                Storage::disk('public')->delete($profile->foto_profil);
             }
             $data['foto_profil'] = $request->file('foto_profil')->store('profiles', 'public');
         }
+        
+        // Memperbarui nama di tabel users
+        $user->name = $request->input('nama_lengkap');
+        $user->save();
 
-        $profile->update($data);
+        // Memperbarui data di tabel dosen_profiles
+        $profile->fill($data);
+        $profile->save();
+        
         return response()->json(['success' => true, 'message' => 'Data pribadi berhasil diperbarui.']);
     }
 
+    // Metode update lainnya (updateInpassing, updateJabatanFungsional, dll.)
+    // Saya telah memperbarui logika untuk memastikan objek $profile diambil dengan benar
     public function updateInpassing(Request $request)
     {
         $request->validate([
@@ -75,16 +87,17 @@ class ProfileController extends Controller
         ]);
 
         $profile = Auth::user()->dosenProfile ?? new DosenProfile(['user_id' => Auth::id()]);
-        $data = $request->all();
+        $data = $request->except(['_token']);
 
         if ($request->hasFile('file_sk_inpassing')) {
             if ($profile->file_sk_inpassing) {
-                Storage::delete($profile->file_sk_inpassing);
+                Storage::disk('public')->delete($profile->file_sk_inpassing);
             }
             $data['file_sk_inpassing'] = $request->file('file_sk_inpassing')->store('inpassing', 'public');
         }
 
-        $profile->update($data);
+        $profile->fill($data);
+        $profile->save();
         return response()->json(['success' => true, 'message' => 'Data inpassing berhasil diperbarui.']);
     }
 
@@ -99,16 +112,17 @@ class ProfileController extends Controller
         ]);
 
         $profile = Auth::user()->dosenProfile ?? new DosenProfile(['user_id' => Auth::id()]);
-        $data = $request->all();
+        $data = $request->except(['_token']);
 
         if ($request->hasFile('file_sk_jabfung')) {
             if ($profile->file_sk_jabfung) {
-                Storage::delete($profile->file_sk_jabfung);
+                Storage::disk('public')->delete($profile->file_sk_jabfung);
             }
             $data['file_sk_jabfung'] = $request->file('file_sk_jabfung')->store('jabfung', 'public');
         }
 
-        $profile->update($data);
+        $profile->fill($data);
+        $profile->save();
         return response()->json(['success' => true, 'message' => 'Data jabatan fungsional berhasil diperbarui.']);
     }
 
@@ -125,16 +139,17 @@ class ProfileController extends Controller
         ]);
 
         $profile = Auth::user()->dosenProfile ?? new DosenProfile(['user_id' => Auth::id()]);
-        $data = $request->all();
+        $data = $request->except(['_token']);
 
         if ($request->hasFile('file_sk_pangkat')) {
             if ($profile->file_sk_pangkat) {
-                Storage::delete($profile->file_sk_pangkat);
+                Storage::disk('public')->delete($profile->file_sk_pangkat);
             }
             $data['file_sk_pangkat'] = $request->file('file_sk_pangkat')->store('pangkat', 'public');
         }
 
-        $profile->update($data);
+        $profile->fill($data);
+        $profile->save();
         return response()->json(['success' => true, 'message' => 'Data kepangkatan berhasil diperbarui.']);
     }
 
@@ -149,7 +164,8 @@ class ProfileController extends Controller
         ]);
 
         $profile = Auth::user()->dosenProfile ?? new DosenProfile(['user_id' => Auth::id()]);
-        $profile->update($request->all());
+        $profile->fill($request->except(['_token']));
+        $profile->save();
         return response()->json(['success' => true, 'message' => 'Data penempatan berhasil diperbarui.']);
     }
 }
