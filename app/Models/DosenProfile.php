@@ -22,7 +22,7 @@ class DosenProfile extends Model
         return $this->belongsTo(User::class);
     }
 
-    // Relasi baru untuk Kualifikasi
+    // Relasi untuk Kualifikasi
     public function pendidikanFormal()
     {
         return $this->hasMany(DosenPendidikanFormal::class);
@@ -36,5 +36,56 @@ class DosenProfile extends Model
     public function riwayatPekerjaan()
     {
         return $this->hasMany(DosenRiwayatPekerjaan::class);
+    }
+
+    // Relasi baru untuk Pelaksanaan Pendidikan
+    public function pengajaran()
+    {
+        return $this->hasMany(DosenPengajaran::class);
+    }
+    
+    public function bimbinganMahasiswa()
+    {
+        return $this->hasMany(DosenBimbinganMahasiswa::class);
+    }
+
+    public function pengujianMahasiswa()
+    {
+        return $this->hasMany(DosenPengujianMahasiswa::class);
+    }
+
+    public function bahanAjar()
+    {
+        return $this->hasMany(DosenBahanAjar::class);
+    }
+
+    public function pembinaanMahasiswa()
+    {
+        return $this->hasMany(DosenPembinaanMahasiswa::class);
+    }
+
+    public function visitingScientist()
+    {
+        return $this->hasMany(DosenVisitingScientist::class);
+    }
+
+    public function detasering()
+    {
+        return $this->hasMany(DosenDetasering::class);
+    }
+
+    public function orasiIlmiah()
+    {
+        return $this->hasMany(DosenOrasiIlmiah::class);
+    }
+
+    public function pembimbingDosen()
+    {
+        return $this->hasMany(DosenPembimbingDosen::class);
+    }
+
+    public function tugasTambahan()
+    {
+        return $this->hasMany(DosenTugasTambahan::class);
     }
 }

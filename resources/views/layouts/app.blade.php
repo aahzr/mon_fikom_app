@@ -93,8 +93,8 @@
     </header>
 
     <div class="flex-1 flex pt-16">
-        <aside class="sidebar fixed top-16 bottom-0 left-0 overflow-y-auto hidden md:block">
-            <div class="p-6">
+        <aside class="w-64 sidebar fixed top-16 bottom-0 left-0 p-4 flex flex-col justify-between transition-all duration-300">
+            <div class="overflow-y-auto flex-1">
                 <div class="flex items-center mb-6">
                     <img class="h-12 w-12 rounded-full object-cover mr-3" id="sidebar-profile-photo" src="{{ $profilePhoto }}" alt="Avatar">
                     <div>
@@ -134,10 +134,28 @@
                                 <li><a href="#" class="kualifikasi-link block p-2 rounded-lg hover:bg-gray-700" data-target="riwayat-pekerjaan">Riwayat Pekerjaan</a></li>
                             </ul>
                         </li>
+                        <li class="sidebar-item relative">
+                            <button id="pelaksanaanPendidikanDropdown" class="w-full text-left p-3 rounded-lg flex justify-between items-center {{ request()->routeIs('pelaksanaan-pendidikan.*') ? 'active' : '' }}">
+                                <div><i class="fas fa-book fa-fw mr-3"></i><span>Pelaksanaan Pendidikan</span></div>
+                                <i class="fas fa-chevron-down text-xs transition-transform duration-200"></i>
+                            </button>
+                            <ul id="pelaksanaanPendidikanSubmenu" class="hidden pl-8 space-y-2 mt-2 text-sm">
+                                <li><a href="#" class="pelaksanaan-pendidikan-link block p-2 rounded-lg hover:bg-gray-700" data-target="pengajaran">Pengajaran</a></li>
+                                <li><a href="#" class="pelaksanaan-pendidikan-link block p-2 rounded-lg hover:bg-gray-700" data-target="bimbingan-mahasiswa">Bimbingan Mahasiswa</a></li>
+                                <li><a href="#" class="pelaksanaan-pendidikan-link block p-2 rounded-lg hover:bg-gray-700" data-target="pengujian-mahasiswa">Pengujian Mahasiswa</a></li>
+                                <li><a href="#" class="pelaksanaan-pendidikan-link block p-2 rounded-lg hover:bg-gray-700" data-target="bahan-ajar">Bahan Ajar</a></li>
+                                <li><a href="#" class="pelaksanaan-pendidikan-link block p-2 rounded-lg hover:bg-gray-700" data-target="pembinaan-mahasiswa">Pembinaan Mahasiswa</a></li>
+                                <li><a href="#" class="pelaksanaan-pendidikan-link block p-2 rounded-lg hover:bg-gray-700" data-target="visiting-scientist">Visiting Scientist</a></li>
+                                <li><a href="#" class="pelaksanaan-pendidikan-link block p-2 rounded-lg hover:bg-gray-700" data-target="detasering">Detasering</a></li>
+                                <li><a href="#" class="pelaksanaan-pendidikan-link block p-2 rounded-lg hover:bg-gray-700" data-target="orasi-ilmiah">Orasi Ilmiah</a></li>
+                                <li><a href="#" class="pelaksanaan-pendidikan-link block p-2 rounded-lg hover:bg-gray-700" data-target="pembimbing-dosen">Pembimbing Dosen</a></li>
+                                <li><a href="#" class="pelaksanaan-pendidikan-link block p-2 rounded-lg hover:bg-gray-700" data-target="tugas-tambahan">Tugas Tambahan</a></li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
             </div>
-            <div class="mt-auto absolute bottom-4 w-full px-6">
+            <div class="p-4 mt-auto">
                 <a href="{{ route('logout') }}" class="block p-3 rounded-lg text-red-400 hover:bg-gray-700 flex items-center"
                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                     <i class="fas fa-sign-out-alt fa-fw mr-3"></i>
@@ -174,6 +192,11 @@
                 $(this).find('i.fa-chevron-down').toggleClass('rotate-180');
             });
 
+            $('#pelaksanaanPendidikanDropdown').click(function () {
+                $('#pelaksanaanPendidikanSubmenu').toggleClass('hidden');
+                $(this).find('i.fa-chevron-down').toggleClass('rotate-180');
+            });
+
             function resetForm(formId) {
                 const form = $(`#${formId}`);
                 form[0].reset();
@@ -181,7 +204,6 @@
                 form.find('input[name="_method"]').val('');
                 form.find('.text-red-500').text('');
                 form.find('.border-red-500').removeClass('border-red-500');
-                // Hapus tautan file yang ada saat reset form
                 form.find('.existing-file-link').html('');
             }
             
@@ -195,7 +217,6 @@
                 $(`#${modalId}`).addClass('hidden');
             }
 
-            // AJAX content loading for profile and kualifikasi sections
             function loadSection(url, newTitle) {
                 $.get(url, function (data) {
                     $('#dynamic-content-area').html(data);
@@ -230,15 +251,90 @@
                 loadSection(url, newTitle);
             });
             
-            // Logika untuk Pendidikan Formal
-            $(document).on('click', '#add-pendidikan-btn', function() {
-                showModal('pendidikan-modal', 'pendidikan-form', 'Tambah Data Pendidikan Formal');
+            $('.pelaksanaan-pendidikan-link').click(function (e) {
+                e.preventDefault();
+                $('.pelaksanaan-pendidikan-link').removeClass('active');
+                $(this).addClass('active');
+                var target = $(this).data('target');
+                var url = '{{ route('pelaksanaan-pendidikan.section', ['section' => ':section']) }}'.replace(':section', target);
+                var newTitle = $(this).text().trim();
+                loadSection(url, newTitle);
             });
+
+            // Logika terpusat untuk Tambah Data di Pelaksanaan Pendidikan
+            $(document).on('click', '#add-pengajaran-btn', function() {
+                showModal('pengajaran-modal', 'pengajaran-form', 'Tambah Data Pengajaran');
+            });
+            $(document).on('click', '#add-bimbingan-btn', function() {
+                showModal('bimbingan-modal', 'bimbingan-form', 'Tambah Data Bimbingan Mahasiswa');
+            });
+            $(document).on('click', '#add-pengujian-btn', function() {
+                showModal('pengujian-modal', 'pengujian-form', 'Tambah Data Pengujian Mahasiswa');
+            });
+            $(document).on('click', '#add-bahan-ajar-btn', function() {
+                showModal('bahan-ajar-modal', 'bahan-ajar-form', 'Tambah Data Bahan Ajar');
+            });
+            $(document).on('click', '#add-pembinaan-btn', function() {
+                showModal('pembinaan-modal', 'pembinaan-form', 'Tambah Data Pembinaan Mahasiswa');
+            });
+            $(document).on('click', '#add-visiting-scientist-btn', function() {
+                showModal('visiting-scientist-modal', 'visiting-scientist-form', 'Tambah Data Visiting Scientist');
+            });
+            $(document).on('click', '#add-detasering-btn', function() {
+                showModal('detasering-modal', 'detasering-form', 'Tambah Data Detasering');
+            });
+            $(document).on('click', '#add-orasi-ilmiah-btn', function() {
+                showModal('orasi-ilmiah-modal', 'orasi-ilmiah-form', 'Tambah Data Orasi Ilmiah');
+            });
+            $(document).on('click', '#add-pembimbing-dosen-btn', function() {
+                showModal('pembimbing-dosen-modal', 'pembimbing-dosen-form', 'Tambah Data Pembimbingan Dosen');
+            });
+            $(document).on('click', '#add-tugas-tambahan-btn', function() {
+                showModal('tugas-tambahan-modal', 'tugas-tambahan-form', 'Tambah Data Tugas Tambahan');
+            });
+            
             $(document).on('click', '#close-modal-btn', function() {
                 closeModal('pendidikan-modal');
             });
+            $(document).on('click', '#close-diklat-modal-btn', function() {
+                closeModal('diklat-modal');
+            });
+            $(document).on('click', '#close-riwayat-pekerjaan-modal-btn', function() {
+                closeModal('riwayat-pekerjaan-modal');
+            });
+            $(document).on('click', '#close-pengajaran-modal-btn', function() {
+                closeModal('pengajaran-modal');
+            });
+            $(document).on('click', '#close-bimbingan-modal-btn', function() {
+                closeModal('bimbingan-modal');
+            });
+            $(document).on('click', '#close-pengujian-modal-btn', function() {
+                closeModal('pengujian-modal');
+            });
+            $(document).on('click', '#close-bahan-ajar-modal-btn', function() {
+                closeModal('bahan-ajar-modal');
+            });
+            $(document).on('click', '#close-pembinaan-modal-btn', function() {
+                closeModal('pembinaan-modal');
+            });
+            $(document).on('click', '#close-visiting-scientist-modal-btn', function() {
+                closeModal('visiting-scientist-modal');
+            });
+            $(document).on('click', '#close-detasering-modal-btn', function() {
+                closeModal('detasering-modal');
+            });
+            $(document).on('click', '#close-orasi-ilmiah-modal-btn', function() {
+                closeModal('orasi-ilmiah-modal');
+            });
+            $(document).on('click', '#close-pembimbing-dosen-modal-btn', function() {
+                closeModal('pembimbing-dosen-modal');
+            });
+            $(document).on('click', '#close-tugas-tambahan-modal-btn', function() {
+                closeModal('tugas-tambahan-modal');
+            });
 
-            // Perbaikan bug: Tombol edit tidak bisa ditekan
+
+            // Logika untuk Pendidikan Formal
             $(document).on('click', '.edit-pendidikan-btn', function() {
                 var id = $(this).closest('tr').data('id');
                 var url = '{{ route('kualifikasi.pendidikan-formal.edit', ['id' => ':id']) }}'.replace(':id', id);
@@ -255,14 +351,11 @@
                             input.val(data[key]);
                         }
                     }
-                    
-                    // Tampilkan link file jika ada
                     if (data.file_scan_ijazah) {
                         var fileUrl = '{{ asset('storage/') }}' + '/' + data.file_scan_ijazah;
                         var link = $('<a>').attr('href', fileUrl).attr('target', '_blank').text('Lihat File Ijazah');
                         $('#existing-file-link-ijazah').html(link);
                     }
-
                     $('#pendidikan-modal').removeClass('hidden');
                 }).fail(function(xhr) {
                     Swal.fire('Error!', xhr.responseJSON?.message ?? 'Gagal mengambil data.', 'error');
@@ -279,11 +372,6 @@
             $(document).on('click', '#add-diklat-btn', function() {
                 showModal('diklat-modal', 'diklat-form', 'Tambah Data Diklat');
             });
-            $(document).on('click', '#close-diklat-modal-btn', function() {
-                closeModal('diklat-modal');
-            });
-
-            // Perbaikan bug: Modal muncul kosong
             $(document).on('click', '.edit-diklat-btn', function() {
                 var id = $(this).closest('tr').data('id');
                 var url = '{{ route('kualifikasi.diklat.edit', ['id' => ':id']) }}'.replace(':id', id);
@@ -295,19 +383,16 @@
                     $('#diklat-form #diklat-method').val('PUT');
 
                     for (var key in data) {
-                         var input = $(`#diklat-form #${key}`);
+                        var input = $(`#diklat-form #${key}`);
                         if (input.length && input.attr('type') !== 'file') {
                             input.val(data[key]);
                         }
                     }
-                    
-                    // Tampilkan link file jika ada
                     if (data.sertifikat) {
                         var fileUrl = '{{ asset('storage/') }}' + '/' + data.sertifikat;
                         var link = $('<a>').attr('href', fileUrl).attr('target', '_blank').text('Lihat File Sertifikat');
                         $('#existing-file-link-sertifikat').html(link);
                     }
-                    
                     $('#diklat-modal').removeClass('hidden');
                 }).fail(function(xhr) {
                     Swal.fire('Error!', xhr.responseJSON?.message ?? 'Gagal mengambil data.', 'error');
@@ -324,11 +409,6 @@
             $(document).on('click', '#add-riwayat-pekerjaan-btn', function() {
                 showModal('riwayat-pekerjaan-modal', 'riwayat-pekerjaan-form', 'Tambah Data Riwayat Pekerjaan');
             });
-            $(document).on('click', '#close-riwayat-pekerjaan-modal-btn', function() {
-                closeModal('riwayat-pekerjaan-modal');
-            });
-
-            // Perbaikan bug: Modal muncul kosong
             $(document).on('click', '.edit-riwayat-pekerjaan-btn', function() {
                 var id = $(this).closest('tr').data('id');
                 var url = '{{ route('kualifikasi.riwayat-pekerjaan.edit', ['id' => ':id']) }}'.replace(':id', id);
@@ -345,14 +425,11 @@
                             input.val(data[key]);
                         }
                     }
-                    
-                    // Tampilkan link file jika ada
                     if (data.surat_keterangan) {
                         var fileUrl = '{{ asset('storage/') }}' + '/' + data.surat_keterangan;
                         var link = $('<a>').attr('href', fileUrl).attr('target', '_blank').text('Lihat Surat Keterangan');
                         $('#existing-file-link-surat').html(link);
                     }
-                    
                     $('#riwayat-pekerjaan-modal').removeClass('hidden');
                 }).fail(function(xhr) {
                     Swal.fire('Error!', xhr.responseJSON?.message ?? 'Gagal mengambil data.', 'error');
@@ -362,6 +439,398 @@
             $(document).on('click', '.delete-riwayat-pekerjaan-btn', function() {
                 var id = $(this).closest('tr').data('id');
                 var url = '{{ route('kualifikasi.riwayat-pekerjaan.delete', ['id' => ':id']) }}'.replace(':id', id);
+                handleDelete(url);
+            });
+
+            // Logika untuk Pengajaran
+            $(document).on('click', '#add-pengajaran-btn', function() {
+                showModal('pengajaran-modal', 'pengajaran-form', 'Tambah Data Pengajaran');
+            });
+            $(document).on('click', '.edit-pengajaran-btn', function() {
+                var id = $(this).closest('tr').data('id');
+                var url = '{{ route('pelaksanaan-pendidikan.pengajaran.edit', ['id' => ':id']) }}'.replace(':id', id);
+                $.get(url, function(data) {
+                    resetForm('pengajaran-form');
+                    $('#pengajaran-form #modal-title').text('Edit Data Pengajaran');
+                    $('#pengajaran-form').attr('action', '{{ route('pelaksanaan-pendidikan.pengajaran.update', ['id' => ':id']) }}'.replace(':id', id));
+                    $('#pengajaran-form #pengajaran-method').val('PUT');
+
+                    for (var key in data) {
+                        var input = $(`#pengajaran-form #${key}`);
+                        if (input.length && input.attr('type') !== 'file') {
+                            input.val(data[key]);
+                        }
+                    }
+                    if (data.rps_file) {
+                        var fileUrl = '{{ asset('storage/') }}' + '/' + data.rps_file;
+                        var link = $('<a>').attr('href', fileUrl).attr('target', '_blank').text('Lihat File RPS');
+                        $('#existing-rps-link').html(link);
+                    }
+                    if (data.bukti_kehadiran_file) {
+                        var fileUrl = '{{ asset('storage/') }}' + '/' + data.bukti_kehadiran_file;
+                        var link = $('<a>').attr('href', fileUrl).attr('target', '_blank').text('Lihat Bukti Kehadiran');
+                        $('#existing-kehadiran-link').html(link);
+                    }
+                    $('#pengajaran-modal').removeClass('hidden');
+                }).fail(function(xhr) {
+                    Swal.fire('Error!', xhr.responseJSON?.message ?? 'Gagal mengambil data.', 'error');
+                });
+            });
+            $(document).on('click', '.delete-pengajaran-btn', function() {
+                var id = $(this).closest('tr').data('id');
+                var url = '{{ route('pelaksanaan-pendidikan.pengajaran.delete', ['id' => ':id']) }}'.replace(':id', id);
+                handleDelete(url);
+            });
+
+            // Logika untuk Bimbingan Mahasiswa
+            $(document).on('click', '#add-bimbingan-btn', function() {
+                showModal('bimbingan-modal', 'bimbingan-form', 'Tambah Data Bimbingan Mahasiswa');
+            });
+            $(document).on('click', '#close-bimbingan-modal-btn', function() {
+                closeModal('bimbingan-modal');
+            });
+            $(document).on('click', '.edit-bimbingan-btn', function() {
+                var id = $(this).closest('tr').data('id');
+                var url = '{{ route('pelaksanaan-pendidikan.bimbingan-mahasiswa.edit', ['id' => ':id']) }}'.replace(':id', id);
+                $.get(url, function(data) {
+                    resetForm('bimbingan-form');
+                    $('#bimbingan-form #modal-title').text('Edit Data Bimbingan Mahasiswa');
+                    $('#bimbingan-form').attr('action', '{{ route('pelaksanaan-pendidikan.bimbingan-mahasiswa.update', ['id' => ':id']) }}'.replace(':id', id));
+                    $('#bimbingan-form #bimbingan-method').val('PUT');
+
+                    for (var key in data) {
+                        var input = $(`#bimbingan-form #${key}`);
+                        if (input.length && input.attr('type') !== 'file') {
+                            input.val(data[key]);
+                        }
+                    }
+                    if (data.bukti_bimbingan_file) {
+                        var fileUrl = '{{ asset('storage/') }}' + '/' + data.bukti_bimbingan_file;
+                        var link = $('<a>').attr('href', fileUrl).attr('target', '_blank').text('Lihat Bukti Bimbingan');
+                        $('#existing-bimbingan-file-link').html(link);
+                    }
+                    $('#bimbingan-modal').removeClass('hidden');
+                }).fail(function(xhr) {
+                    Swal.fire('Error!', xhr.responseJSON?.message ?? 'Gagal mengambil data.', 'error');
+                });
+            });
+            $(document).on('click', '.delete-bimbingan-btn', function() {
+                var id = $(this).closest('tr').data('id');
+                var url = '{{ route('pelaksanaan-pendidikan.bimbingan-mahasiswa.delete', ['id' => ':id']) }}'.replace(':id', id);
+                handleDelete(url);
+            });
+
+            // Logika untuk Pengujian Mahasiswa
+            $(document).on('click', '#add-pengujian-btn', function() {
+                showModal('pengujian-modal', 'pengujian-form', 'Tambah Data Pengujian Mahasiswa');
+            });
+            $(document).on('click', '#close-pengujian-modal-btn', function() {
+                closeModal('pengujian-modal');
+            });
+            $(document).on('click', '.edit-pengujian-btn', function() {
+                var id = $(this).closest('tr').data('id');
+                var url = '{{ route('pelaksanaan-pendidikan.pengujian-mahasiswa.edit', ['id' => ':id']) }}'.replace(':id', id);
+                $.get(url, function(data) {
+                    resetForm('pengujian-form');
+                    $('#pengujian-form #modal-title').text('Edit Data Pengujian Mahasiswa');
+                    $('#pengujian-form').attr('action', '{{ route('pelaksanaan-pendidikan.pengujian-mahasiswa.update', ['id' => ':id']) }}'.replace(':id', id));
+                    $('#pengujian-form #pengujian-method').val('PUT');
+
+                    for (var key in data) {
+                        var input = $(`#pengujian-form #${key}`);
+                        if (input.length && input.attr('type') !== 'file') {
+                            input.val(data[key]);
+                        }
+                    }
+                    if (data.bukti_kehadiran_file) {
+                        var fileUrl = '{{ asset('storage/') }}' + '/' + data.bukti_kehadiran_file;
+                        var link = $('<a>').attr('href', fileUrl).attr('target', '_blank').text('Lihat Bukti Kehadiran');
+                        $('#existing-pengujian-file-link').html(link);
+                    }
+                    $('#pengujian-modal').removeClass('hidden');
+                }).fail(function(xhr) {
+                    Swal.fire('Error!', xhr.responseJSON?.message ?? 'Gagal mengambil data.', 'error');
+                });
+            });
+            $(document).on('click', '.delete-pengujian-btn', function() {
+                var id = $(this).closest('tr').data('id');
+                var url = '{{ route('pelaksanaan-pendidikan.pengujian-mahasiswa.delete', ['id' => ':id']) }}'.replace(':id', id);
+                handleDelete(url);
+            });
+            
+            // Logika untuk Bahan Ajar
+            $(document).on('click', '#add-bahan-ajar-btn', function() {
+                showModal('bahan-ajar-modal', 'bahan-ajar-form', 'Tambah Data Bahan Ajar');
+            });
+            $(document).on('click', '#close-bahan-ajar-modal-btn', function() {
+                closeModal('bahan-ajar-modal');
+            });
+            $(document).on('click', '.edit-bahan-ajar-btn', function() {
+                var id = $(this).closest('tr').data('id');
+                var url = '{{ route('pelaksanaan-pendidikan.bahan-ajar.edit', ['id' => ':id']) }}'.replace(':id', id);
+                $.get(url, function(data) {
+                    resetForm('bahan-ajar-form');
+                    $('#bahan-ajar-form #modal-title').text('Edit Data Bahan Ajar');
+                    $('#bahan-ajar-form').attr('action', '{{ route('pelaksanaan-pendidikan.bahan-ajar.update', ['id' => ':id']) }}'.replace(':id', id));
+                    $('#bahan-ajar-form #bahan-ajar-method').val('PUT');
+
+                    for (var key in data) {
+                        var input = $(`#bahan-ajar-form #${key}`);
+                        if (input.length && input.attr('type') !== 'file') {
+                            input.val(data[key]);
+                        }
+                    }
+                    if (data.file_bahan_ajar) {
+                        var fileUrl = '{{ asset('storage/') }}' + '/' + data.file_bahan_ajar;
+                        var link = $('<a>').attr('href', fileUrl).attr('target', '_blank').text('Lihat File Bahan Ajar');
+                        $('#existing-bahan-ajar-link').html(link);
+                    }
+                    $('#bahan-ajar-modal').removeClass('hidden');
+                }).fail(function(xhr) {
+                    Swal.fire('Error!', xhr.responseJSON?.message ?? 'Gagal mengambil data.', 'error');
+                });
+            });
+            $(document).on('click', '.delete-bahan-ajar-btn', function() {
+                var id = $(this).closest('tr').data('id');
+                var url = '{{ route('pelaksanaan-pendidikan.bahan-ajar.delete', ['id' => ':id']) }}'.replace(':id', id);
+                handleDelete(url);
+            });
+
+            // Logika untuk Pembinaan Mahasiswa
+            $(document).on('click', '#add-pembinaan-btn', function() {
+                showModal('pembinaan-modal', 'pembinaan-form', 'Tambah Data Pembinaan Mahasiswa');
+            });
+            $(document).on('click', '#close-pembinaan-modal-btn', function() {
+                closeModal('pembinaan-modal');
+            });
+            $(document).on('click', '.edit-pembinaan-btn', function() {
+                var id = $(this).closest('tr').data('id');
+                var url = '{{ route('pelaksanaan-pendidikan.pembinaan-mahasiswa.edit', ['id' => ':id']) }}'.replace(':id', id);
+                $.get(url, function(data) {
+                    resetForm('pembinaan-form');
+                    $('#pembinaan-form #modal-title').text('Edit Data Pembinaan Mahasiswa');
+                    $('#pembinaan-form').attr('action', '{{ route('pelaksanaan-pendidikan.pembinaan-mahasiswa.update', ['id' => ':id']) }}'.replace(':id', id));
+                    $('#pembinaan-form #pembinaan-method').val('PUT');
+
+                    for (var key in data) {
+                        var input = $(`#pembinaan-form #${key}`);
+                        if (input.length && input.attr('type') !== 'file') {
+                            input.val(data[key]);
+                        }
+                    }
+                    if (data.bukti_dokumentasi_file) {
+                        var fileUrl = '{{ asset('storage/') }}' + '/' + data.bukti_dokumentasi_file;
+                        var link = $('<a>').attr('href', fileUrl).attr('target', '_blank').text('Lihat Bukti Dokumentasi');
+                        $('#existing-pembinaan-file-link').html(link);
+                    }
+                    $('#pembinaan-modal').removeClass('hidden');
+                }).fail(function(xhr) {
+                    Swal.fire('Error!', xhr.responseJSON?.message ?? 'Gagal mengambil data.', 'error');
+                });
+            });
+            $(document).on('click', '.delete-pembinaan-btn', function() {
+                var id = $(this).closest('tr').data('id');
+                var url = '{{ route('pelaksanaan-pendidikan.pembinaan-mahasiswa.delete', ['id' => ':id']) }}'.replace(':id', id);
+                handleDelete(url);
+            });
+            
+            // Logika untuk Visiting Scientist
+            $(document).on('click', '#add-visiting-scientist-btn', function() {
+                showModal('visiting-scientist-modal', 'visiting-scientist-form', 'Tambah Data Visiting Scientist');
+            });
+            $(document).on('click', '#close-visiting-scientist-modal-btn', function() {
+                closeModal('visiting-scientist-modal');
+            });
+            $(document).on('click', '.edit-visiting-scientist-btn', function() {
+                var id = $(this).closest('tr').data('id');
+                var url = '{{ route('pelaksanaan-pendidikan.visiting-scientist.edit', ['id' => ':id']) }}'.replace(':id', id);
+                $.get(url, function(data) {
+                    resetForm('visiting-scientist-form');
+                    $('#visiting-scientist-form #modal-title').text('Edit Data Visiting Scientist');
+                    $('#visiting-scientist-form').attr('action', '{{ route('pelaksanaan-pendidikan.visiting-scientist.update', ['id' => ':id']) }}'.replace(':id', id));
+                    $('#visiting-scientist-form #visiting-scientist-method').val('PUT');
+                    for (var key in data) {
+                        var input = $(`#visiting-scientist-form #${key}`);
+                        if (input.length && input.attr('type') !== 'file') {
+                            input.val(data[key]);
+                        }
+                    }
+                    if (data.surat_tugas_file) {
+                        var fileUrl = '{{ asset('storage/') }}' + '/' + data.surat_tugas_file;
+                        var link = $('<a>').attr('href', fileUrl).attr('target', '_blank').text('Lihat Surat Tugas');
+                        $('#existing-surat-tugas-file-link').html(link);
+                    }
+                    if (data.bukti_dokumentasi_file) {
+                        var fileUrl = '{{ asset('storage/') }}' + '/' + data.bukti_dokumentasi_file;
+                        var link = $('<a>').attr('href', fileUrl).attr('target', '_blank').text('Lihat Bukti Dokumentasi');
+                        $('#existing-visiting-bukti-file-link').html(link);
+                    }
+                    $('#visiting-scientist-modal').removeClass('hidden');
+                }).fail(function(xhr) {
+                    Swal.fire('Error!', xhr.responseJSON?.message ?? 'Gagal mengambil data.', 'error');
+                });
+            });
+            $(document).on('click', '.delete-visiting-scientist-btn', function() {
+                var id = $(this).closest('tr').data('id');
+                var url = '{{ route('pelaksanaan-pendidikan.visiting-scientist.delete', ['id' => ':id']) }}'.replace(':id', id);
+                handleDelete(url);
+            });
+
+            // Logika untuk Detasering
+            $(document).on('click', '#add-detasering-btn', function() {
+                showModal('detasering-modal', 'detasering-form', 'Tambah Data Detasering');
+            });
+            $(document).on('click', '#close-detasering-modal-btn', function() {
+                closeModal('detasering-modal');
+            });
+            $(document).on('click', '.edit-detasering-btn', function() {
+                var id = $(this).closest('tr').data('id');
+                var url = '{{ route('pelaksanaan-pendidikan.detasering.edit', ['id' => ':id']) }}'.replace(':id', id);
+                $.get(url, function(data) {
+                    resetForm('detasering-form');
+                    $('#detasering-form #modal-title').text('Edit Data Detasering');
+                    $('#detasering-form').attr('action', '{{ route('pelaksanaan-pendidikan.detasering.update', ['id' => ':id']) }}'.replace(':id', id));
+                    $('#detasering-form #detasering-method').val('PUT');
+                    for (var key in data) {
+                        var input = $(`#detasering-form #${key}`);
+                        if (input.length && input.attr('type') !== 'file') {
+                            input.val(data[key]);
+                        }
+                    }
+                    if (data.surat_tugas_file) {
+                        var fileUrl = '{{ asset('storage/') }}' + '/' + data.surat_tugas_file;
+                        var link = $('<a>').attr('href', fileUrl).attr('target', '_blank').text('Lihat Surat Tugas');
+                        $('#existing-surat-tugas-link').html(link);
+                    }
+                    if (data.bukti_kegiatan_file) {
+                        var fileUrl = '{{ asset('storage/') }}' + '/' + data.bukti_kegiatan_file;
+                        var link = $('<a>').attr('href', fileUrl).attr('target', '_blank').text('Lihat Bukti Kegiatan');
+                        $('#existing-bukti-kegiatan-link').html(link);
+                    }
+                    $('#detasering-modal').removeClass('hidden');
+                }).fail(function(xhr) {
+                    Swal.fire('Error!', xhr.responseJSON?.message ?? 'Gagal mengambil data.', 'error');
+                });
+            });
+            $(document).on('click', '.delete-detasering-btn', function() {
+                var id = $(this).closest('tr').data('id');
+                var url = '{{ route('pelaksanaan-pendidikan.detasering.delete', ['id' => ':id']) }}'.replace(':id', id);
+                handleDelete(url);
+            });
+
+            // Logika untuk Orasi Ilmiah
+            $(document).on('click', '#add-orasi-ilmiah-btn', function() {
+                showModal('orasi-ilmiah-modal', 'orasi-ilmiah-form', 'Tambah Data Orasi Ilmiah');
+            });
+            $(document).on('click', '#close-orasi-ilmiah-modal-btn', function() {
+                closeModal('orasi-ilmiah-modal');
+            });
+            $(document).on('click', '.edit-orasi-ilmiah-btn', function() {
+                var id = $(this).closest('tr').data('id');
+                var url = '{{ route('pelaksanaan-pendidikan.orasi-ilmiah.edit', ['id' => ':id']) }}'.replace(':id', id);
+                $.get(url, function(data) {
+                    resetForm('orasi-ilmiah-form');
+                    $('#orasi-ilmiah-form #modal-title').text('Edit Data Orasi Ilmiah');
+                    $('#orasi-ilmiah-form').attr('action', '{{ route('pelaksanaan-pendidikan.orasi-ilmiah.update', ['id' => ':id']) }}'.replace(':id', id));
+                    $('#orasi-ilmiah-form #orasi-ilmiah-method').val('PUT');
+                    for (var key in data) {
+                        var input = $(`#orasi-ilmiah-form #${key}`);
+                        if (input.length && input.attr('type') !== 'file') {
+                            input.val(data[key]);
+                        }
+                    }
+                    if (data.materi_file) {
+                        var fileUrl = '{{ asset('storage/') }}' + '/' + data.materi_file;
+                        var link = $('<a>').attr('href', fileUrl).attr('target', '_blank').text('Lihat File Materi');
+                        $('#existing-materi-file-link').html(link);
+                    }
+                    if (data.bukti_dokumentasi_file) {
+                        var fileUrl = '{{ asset('storage/') }}' + '/' + data.bukti_dokumentasi_file;
+                        var link = $('<a>').attr('href', fileUrl).attr('target', '_blank').text('Lihat Bukti Dokumentasi');
+                        $('#existing-orasi-bukti-file-link').html(link);
+                    }
+                    $('#orasi-ilmiah-modal').removeClass('hidden');
+                }).fail(function(xhr) {
+                    Swal.fire('Error!', xhr.responseJSON?.message ?? 'Gagal mengambil data.', 'error');
+                });
+            });
+            $(document).on('click', '.delete-orasi-ilmiah-btn', function() {
+                var id = $(this).closest('tr').data('id');
+                var url = '{{ route('pelaksanaan-pendidikan.orasi-ilmiah.delete', ['id' => ':id']) }}'.replace(':id', id);
+                handleDelete(url);
+            });
+            
+            // Logika untuk Pembimbing Dosen
+            $(document).on('click', '#add-pembimbing-dosen-btn', function() {
+                showModal('pembimbing-dosen-modal', 'pembimbing-dosen-form', 'Tambah Data Pembimbingan Dosen');
+            });
+            $(document).on('click', '#close-pembimbing-dosen-modal-btn', function() {
+                closeModal('pembimbing-dosen-modal');
+            });
+            $(document).on('click', '.edit-pembimbing-dosen-btn', function() {
+                var id = $(this).closest('tr').data('id');
+                var url = '{{ route('pelaksanaan-pendidikan.pembimbing-dosen.edit', ['id' => ':id']) }}'.replace(':id', id);
+                $.get(url, function(data) {
+                    resetForm('pembimbing-dosen-form');
+                    $('#pembimbing-dosen-form #modal-title').text('Edit Data Pembimbingan Dosen');
+                    $('#pembimbing-dosen-form').attr('action', '{{ route('pelaksanaan-pendidikan.pembimbing-dosen.update', ['id' => ':id']) }}'.replace(':id', id));
+                    $('#pembimbing-dosen-form #pembimbing-dosen-method').val('PUT');
+                    for (var key in data) {
+                        var input = $(`#pembimbing-dosen-form #${key}`);
+                        if (input.length && input.attr('type') !== 'file') {
+                            input.val(data[key]);
+                        }
+                    }
+                    if (data.bukti_pembimbingan_file) {
+                        var fileUrl = '{{ asset('storage/') }}' + '/' + data.bukti_pembimbingan_file;
+                        var link = $('<a>').attr('href', fileUrl).attr('target', '_blank').text('Lihat Bukti Pembimbingan');
+                        $('#existing-pembimbing-dosen-file-link').html(link);
+                    }
+                    $('#pembimbing-dosen-modal').removeClass('hidden');
+                }).fail(function(xhr) {
+                    Swal.fire('Error!', xhr.responseJSON?.message ?? 'Gagal mengambil data.', 'error');
+                });
+            });
+            $(document).on('click', '.delete-pembimbing-dosen-btn', function() {
+                var id = $(this).closest('tr').data('id');
+                var url = '{{ route('pelaksanaan-pendidikan.pembimbing-dosen.delete', ['id' => ':id']) }}'.replace(':id', id);
+                handleDelete(url);
+            });
+
+            // Logika untuk Tugas Tambahan
+            $(document).on('click', '#add-tugas-tambahan-btn', function() {
+                showModal('tugas-tambahan-modal', 'tugas-tambahan-form', 'Tambah Data Tugas Tambahan');
+            });
+            $(document).on('click', '#close-tugas-tambahan-modal-btn', function() {
+                closeModal('tugas-tambahan-modal');
+            });
+            $(document).on('click', '.edit-tugas-tambahan-btn', function() {
+                var id = $(this).closest('tr').data('id');
+                var url = '{{ route('pelaksanaan-pendidikan.tugas-tambahan.edit', ['id' => ':id']) }}'.replace(':id', id);
+                $.get(url, function(data) {
+                    resetForm('tugas-tambahan-form');
+                    $('#tugas-tambahan-form #modal-title').text('Edit Data Tugas Tambahan');
+                    $('#tugas-tambahan-form').attr('action', '{{ route('pelaksanaan-pendidikan.tugas-tambahan.update', ['id' => ':id']) }}'.replace(':id', id));
+                    $('#tugas-tambahan-form #tugas-tambahan-method').val('PUT');
+                    for (var key in data) {
+                        var input = $(`#tugas-tambahan-form #${key}`);
+                        if (input.length && input.attr('type') !== 'file') {
+                            input.val(data[key]);
+                        }
+                    }
+                    if (data.sk_file) {
+                        var fileUrl = '{{ asset('storage/') }}' + '/' + data.sk_file;
+                        var link = $('<a>').attr('href', fileUrl).attr('target', '_blank').text('Lihat File SK');
+                        $('#existing-sk-file-link').html(link);
+                    }
+                    $('#tugas-tambahan-modal').removeClass('hidden');
+                }).fail(function(xhr) {
+                    Swal.fire('Error!', xhr.responseJSON?.message ?? 'Gagal mengambil data.', 'error');
+                });
+            });
+            $(document).on('click', '.delete-tugas-tambahan-btn', function() {
+                var id = $(this).closest('tr').data('id');
+                var url = '{{ route('pelaksanaan-pendidikan.tugas-tambahan.delete', ['id' => ':id']) }}'.replace(':id', id);
                 handleDelete(url);
             });
 
@@ -400,14 +869,13 @@
                 });
             });
 
-            // Handler untuk semua form submit kualifikasi
-            $(document).on('submit', '#pendidikan-form, #diklat-form, #riwayat-pekerjaan-form', function(e) {
+            // Handler untuk semua form submit
+            $(document).on('submit', '#pendidikan-form, #diklat-form, #riwayat-pekerjaan-form, #pengajaran-form, #bimbingan-form, #pengujian-form, #bahan-ajar-form, #pembinaan-form, #visiting-scientist-form, #detasering-form, #orasi-ilmiah-form, #pembimbing-dosen-form, #tugas-tambahan-form', function(e) {
                 e.preventDefault();
                 var form = $(this);
                 var url = form.attr('action');
                 var formData = new FormData(form[0]);
                 var modalId = form.closest('.fixed').attr('id');
-                var section = form.attr('id').replace('-form', '');
                 
                 if (form.find('input[name="_method"]').val() === 'PUT') {
                     formData.append('_method', 'PUT');
@@ -422,9 +890,14 @@
                     success: function(response) {
                         Swal.fire('Sukses!', response.message, 'success').then(() => {
                             closeModal(modalId);
-                            var activeLink = $('.kualifikasi-link.active');
-                            var target = activeLink.data('target') || 'pendidikan-formal';
-                            var newUrl = '{{ route('kualifikasi.section', ['section' => ':section']) }}'.replace(':section', target);
+                            var activeLink = $('.kualifikasi-link.active, .pelaksanaan-pendidikan-link.active');
+                            var target = activeLink.data('target');
+                            var newUrl = '';
+                            if (activeLink.hasClass('kualifikasi-link')) {
+                                newUrl = '{{ route('kualifikasi.section', ['section' => ':section']) }}'.replace(':section', target);
+                            } else {
+                                newUrl = '{{ route('pelaksanaan-pendidikan.section', ['section' => ':section']) }}'.replace(':section', target);
+                            }
                             var newTitle = activeLink.text().trim();
                             loadSection(newUrl, newTitle);
                         });
@@ -467,9 +940,14 @@
                             },
                             success: function(response) {
                                 Swal.fire('Dihapus!', response.message, 'success').then(() => {
-                                    var activeLink = $('.kualifikasi-link.active');
-                                    var target = activeLink.data('target') || 'pendidikan-formal';
-                                    var newUrl = '{{ route('kualifikasi.section', ['section' => ':section']) }}'.replace(':section', target);
+                                    var activeLink = $('.kualifikasi-link.active, .pelaksanaan-pendidikan-link.active');
+                                    var target = activeLink.data('target');
+                                    var newUrl = '';
+                                    if (activeLink.hasClass('kualifikasi-link')) {
+                                        newUrl = '{{ route('kualifikasi.section', ['section' => ':section']) }}'.replace(':section', target);
+                                    } else {
+                                        newUrl = '{{ route('pelaksanaan-pendidikan.section', ['section' => ':section']) }}'.replace(':section', target);
+                                    }
                                     var newTitle = activeLink.text().trim();
                                     loadSection(newUrl, newTitle);
                                 });
